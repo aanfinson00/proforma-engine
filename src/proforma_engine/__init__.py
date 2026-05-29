@@ -1,3 +1,4 @@
+from proforma_engine.cashflow import project_lease, project_rent_roll
 from proforma_engine.lease import (
     ExpenseStructure,
     Lease,
@@ -12,6 +13,8 @@ __all__ = [
     "PercentageRent",
     "RenewalOption",
     "RentStep",
+    "project_lease",
+    "project_rent_roll",
 ]
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
