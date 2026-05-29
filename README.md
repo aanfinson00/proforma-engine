@@ -4,13 +4,13 @@ Open-source commercial real estate underwriting — lease-level cash flow modeli
 
 ## Why
 
-[Argus Enterprise](https://www.altusgroup.com/argus/) is the industry-standard tool for CRE underwriting. It is closed-source, expensive, and gated. As of May 2026, no open-source equivalent exists. The only credible OSS foundation is [rangekeeper](https://github.com/daniel-fink/rangekeeper) (MPL-2.0), which implements the canonical Geltner/de Neufville DCF methodology — but operates at the top-down property level (NOI in, IRR out) and does not model rent rolls, expense recoveries, or market leasing assumptions.
+[Argus Enterprise](https://www.altusgroup.com/argus/) is the industry-standard tool for CRE underwriting. It is closed-source, expensive, and gated. As of May 2026, no open-source equivalent exists.
 
 This project fills that gap. The goal is an open, scriptable, lease-level CRE underwriting engine — Argus-grade depth where it matters, no subscription.
 
 ## Status
 
-**Pre-alpha.** Lease data model lands first. Cashflow projector, recovery engine, and rangekeeper integration in progress.
+**Pre-alpha.** End-to-end deterministic DCF works: lease → cashflow → recoveries → NOI → debt service → reversion → unlevered + levered IRR + equity multiple. 43 tests passing.
 
 ## Phase 1 scope
 
@@ -18,13 +18,14 @@ This project fills that gap. The goal is an open, scriptable, lease-level CRE un
 - [x] Lease cashflow projector (monthly base rent, step-ups, free rent abatement, TI, LC)
 - [x] Rent roll aggregation (sum many leases onto a common timeline)
 - [x] Expense recovery engine (NNN, MG base year, MG expense stop, FSG, annual recovery cap)
+- [x] Debt: amortization, IO period, balloon
+- [x] DCF: NOI assembly → reversion → unlevered & levered IRR + equity multiple
 - [ ] Rent roll I/O (CSV/Excel import)
-- [ ] rangekeeper integration (feed lease cashflows into NOI → NCF → reversion → IRR)
-- [ ] Demo notebook: small office building, mixed lease structures, debt, reversion
+- [ ] Demo notebook end-to-end
 
 ## Phase 2+
 
-Market leasing assumptions on rollover, partition reports, multi-property portfolio rollup, gross-up for partial occupancy, percentage rent against actual sales, Argus `.aeex` file import.
+Forward (year N+1) NOI for reversion (currently trailing-12), market leasing assumptions on rollover, partition reports, multi-property portfolio rollup, gross-up for partial occupancy, percentage rent against actual sales, Argus `.aeex` file import, optional rangekeeper integration for stochastic / Monte Carlo / real-options modeling.
 
 ## Install
 
@@ -33,8 +34,8 @@ pip install -e ".[dev]"
 pytest
 ```
 
-The `engine` extra (`pip install -e ".[dev,engine]"`) pulls in rangekeeper, which currently pins Python `>=3.10,<3.13`. Until that loosens, run the rangekeeper-integrated path in a Python 3.12 venv. The lease layer itself works on 3.11+.
+The optional `engine` extra (`pip install -e ".[dev,engine]"`) pulls in [rangekeeper](https://github.com/daniel-fink/rangekeeper) for stochastic / Monte Carlo modeling. It pins Python `>=3.10,<3.13`, so install it in a 3.12 venv if needed. The core deterministic DCF in this package works on 3.11+ and has no rangekeeper dependency.
 
 ## License
 
-MIT. rangekeeper is MPL-2.0 and is depended on as an unmodified library.
+MIT.
